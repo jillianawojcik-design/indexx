@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Folioform — Your work. Your story. Your future.</title>
+  <meta name="description" content="Folioform turns your resume, reports, research and projects into a polished, shareable portfolio website. Built by Jillian Wojcik for ENGR 310." />
+  <meta name="author" content="Jillian Wojcik" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f7f3ec;
+      --paper-2: #efe8dc;
+      --ink: #16213a;
+      --ink-soft: #4a5571;
+      --line: #ddd3c3;
+      --accent: #e2553b;
+      --accent-dark: #b9402a;
+      --sage: #2f6f5e;
+      --white: #ffffff;
+      --radius: 16px;
+      --shadow: 0 18px 40px -18px rgba(22, 33, 58, 0.35);
+      --max: 1120px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.15; letter-spacing: -0.01em; }
+    a { color: inherit; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    section { padding: 88px 0; }
+    .eyebrow {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-head { max-width: 640px; margin-bottom: 48px; }
+    .section-head h2 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin-bottom: 14px; }
+    .section-head p { color: var(--ink-soft); font-size: 1.05rem; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 22px; border-radius: 999px; font-weight: 600; font-size: 0.95rem;
+      text-decoration: none; border: 2px solid transparent; cursor: pointer;
+      transition: transform .15s ease, background .15s ease, color .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: var(--white); }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-ghost { border-color: var(--ink); color: var(--ink); background: transparent; }
+    .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+    .btn-block { width: 100%; }
+
+    /* ---------- Nav ---------- */
+    header.nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(247, 243, 236, 0.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+    .logo { font-family: "Fraunces", serif; font-weight: 700; font-size: 1.45rem; text-decoration: none; }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; font-size: 0.92rem; font-weight: 500; color: var(--ink-soft); }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-credit { font-size: 0.8rem; color: var(--ink-soft); }
+    .menu-btn { display: none; background: none; border: 0; font-size: 1.6rem; cursor: pointer; color: var(--ink); }
+
+    /* ---------- Hero ---------- */
+    .hero { padding: 72px 0 96px; }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+    .hero h1 { font-size: clamp(2.5rem, 6vw, 4.2rem); margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero p.lead { font-size: 1.15rem; color: var(--ink-soft); max-width: 540px; margin-bottom: 30px; }
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 26px; }
+    .hero-note { font-size: 0.88rem; color: var(--ink-soft); }
+
+    /* Mock portfolio preview */
+    .mock {
+      background: var(--white); border-radius: 20px; box-shadow: var(--shadow);
+      border: 1px solid var(--line); overflow: hidden; transform: rotate(1.5deg);
+    }
+    .mock-bar { display: flex; gap: 6px; padding: 12px 14px; background: var(--paper-2); border-bottom: 1px solid var(--line); }
+    .mock-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); display: block; }
+    .mock-url { margin-left: 10px; font-size: 0.72rem; color: var(--ink-soft); }
+    .mock-body { padding: 22px; }
+    .mock-name { font-family: "Fraunces", serif; font-size: 1.3rem; font-weight: 700; }
+    .mock-role { font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 16px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+    .chip { font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #e7f0ec; color: var(--sage); }
+    .mock-card { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .mock-card strong { display: block; font-size: 0.88rem; margin-bottom: 4px; }
+    .mock-card span { font-size: 0.78rem; color: var(--ink-soft); }
+    .mock-stat { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); font-size: 0.75rem; color: var(--ink-soft); }
+    .mock-stat b { color: var(--ink); font-size: 0.95rem; display: block; }
+
+    /* ---------- Steps ---------- */
+    .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; counter-reset: step; }
+    .step { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px 20px; position: relative; }
+    .step::before {
+      counter-increment: step; content: counter(step, decimal-leading-zero);
+      font-family: "Fraunces", serif; font-size: 2rem; font-weight: 700; color: var(--accent);
+      display: block; margin-bottom: 10px;
+    }
+    .step h3 { font-size: 1.1rem; margin-bottom: 6px; }
+    .step p { font-size: 0.9rem; color: var(--ink-soft); }
+
+    /* ---------- Differentiator band ---------- */
+    .band { background: var(--ink); color: var(--paper); }
+    .band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .band h2 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin-bottom: 16px; }
+    .band p { color: #c4cbe0; }
+    .compare { display: grid; gap: 14px; }
+    .compare div { border-radius: 14px; padding: 18px 20px; }
+    .compare .them { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+    .compare .us { background: var(--accent); color: var(--white); }
+    .compare small { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.7rem; font-weight: 700; opacity: 0.8; }
+    .compare p { color: inherit; margin-top: 4px; }
+
+    /* ---------- Pricing ---------- */
+    .toggle { display: inline-flex; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 4px; margin-bottom: 36px; }
+    .toggle button {
+      border: 0; background: transparent; padding: 10px 20px; border-radius: 999px;
+      font: inherit; font-weight: 600; font-size: 0.9rem; color: var(--ink-soft); cursor: pointer;
+    }
+    .toggle button.active { background: var(--ink); color: var(--paper); }
+    .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; max-width: 860px; }
+    .plan {
+      background: var(--white); border: 1px solid var(--line); border-radius: 20px; padding: 30px;
+      display: flex; flex-direction: column; position: relative;
+    }
+    .plan.featured { border: 2px solid var(--accent); box-shadow: var(--shadow); }
+    .badge {
+      position: absolute; top: -12px; left: 30px; background: var(--accent); color: var(--white);
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 999px;
+    }
+    .plan h3 { font-size: 1.45rem; }
+    .plan .for { color: var(--ink-soft); font-size: 0.92rem; margin: 4px 0 18px; }
+    .price { font-family: "Fraunces", serif; font-size: 3rem; font-weight: 700; line-height: 1; }
+    .price small { font-family: "Inter", sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--ink-soft); margin-left: 4px; }
+    .plan ul { list-style: none; margin: 22px 0; flex: 1; }
+    .plan li { padding: 7px 0 7px 26px; position: relative; font-size: 0.93rem; border-bottom: 1px solid var(--paper-2); }
+    .plan li::before { content: "✓"; position: absolute; left: 0; color: var(--sage); font-weight: 700; }
+    .plan li.no::before { content: "–"; color: var(--ink-soft); }
+    .plan li.no { color: var(--ink-soft); }
+    .plan .fine { font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 16px; }
+    .plan-group[hidden] { display: none; }
+
+    /* ---------- Add-ons ---------- */
+    .addons-wrap { background: var(--paper-2); }
+    .addons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .addon { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .addon .tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sage); }
+    .addon h3 { font-size: 1.08rem; margin: 6px 0; font-family: "Inter", sans-serif; font-weight: 700; }
+    .addon .amt { font-family: "Fraunces", serif; font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .addon .amt small { font-family: "Inter", sans-serif; font-size: 0.8rem; color: var(--ink-soft); font-weight: 500; }
+    .addon p { font-size: 0.86rem; color: var(--ink-soft); margin-top: 6px; }
+    .addon-note { margin-top: 26px; font-size: 0.92rem; color: var(--ink-soft); }
+
+    /* ---------- Included features ---------- */
+    .features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .feature { padding: 26px 22px; border-top: 3px solid var(--ink); background: var(--white); border-radius: 0 0 var(--radius) var(--radius); }
+    .feature .icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .feature h3 { font-size: 1.15rem; margin-bottom: 6px; }
+    .feature p { font-size: 0.9rem; color: var(--ink-soft); }
+
+    /* ---------- FAQ / Policies ---------- */
+    .faq { max-width: 780px; }
+    details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+    summary { cursor: pointer; font-weight: 600; font-size: 1.02rem; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; font-size: 1.4rem; line-height: 1; color: var(--accent); transition: transform .2s; }
+    details[open] summary::after { transform: rotate(45deg); }
+    details p { margin-top: 10px; color: var(--ink-soft); font-size: 0.95rem; }
+
+    /* ---------- CTA + Footer ---------- */
+    .cta { text-align: center; }
+    .cta h2 { font-size: clamp(2rem, 5vw, 3rem); max-width: 720px; margin: 0 auto 18px; }
+    .cta p { color: var(--ink-soft); margin-bottom: 28px; }
+    footer { border-top: 1px solid var(--line); padding: 36px 0; font-size: 0.88rem; color: var(--ink-soft); }
+    .foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+    .foot strong { color: var(--ink); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 960px) {
+      .hero-grid, .band-grid { grid-template-columns: 1fr; }
+      .mock { transform: none; max-width: 440px; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .addons, .features { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      section { padding: 64px 0; }
+      .nav-links {
+        display: none; position: absolute; top: 68px; left: 0; right: 0;
+        flex-direction: column; gap: 0; background: var(--paper); border-bottom: 1px solid var(--line);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { width: 100%; }
+      .nav-links a { display: block; padding: 14px 20px; }
+      .nav-credit { display: none; }
+      .menu-btn { display: block; }
+      .plans, .steps, .addons, .features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Navigation ===== -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="#top" class="logo">Folio<span>form</span></a>
+      <button class="menu-btn" aria-label="Open menu" id="menuBtn">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#addons">Career tools</a></li>
+        <li><a href="#faq">Policies</a></li>
+        <li><a href="#pricing" class="btn btn-primary" style="color:#fff;padding:9px 18px;">Get started</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">AI portfolio &amp; career prep</p>
+          <h1>Your work. Your story. <em>Your future.</em></h1>
+          <p class="lead">
+            Upload the resume, lab reports, research papers and projects you've already done.
+            Folioform reads them, finds your skills and results, and turns them into a polished,
+            recruiter-ready portfolio website.
+          </p>
+          <div class="hero-ctas">
+            <a href="#pricing" class="btn btn-primary">Build my portfolio — from $19</a>
+            <a href="#how" class="btn btn-ghost">See how it works</a>
+          </div>
+          <p class="hero-note">For students, recent grads and early-career professionals. Analytics included on every plan.</p>
+        </div>
+
+        <!-- Illustrative portfolio preview (sample content, not a real user) -->
+        <div class="mock" aria-label="Example of a generated portfolio">
+          <div class="mock-bar"><i></i><i></i><i></i><span class="mock-url">folioform.app/alex-rivera</span></div>
+          <div class="mock-body">
+            <div class="mock-name">Alex Rivera</div>
+            <div class="mock-role">Mechanical Engineering · Class of 2027</div>
+            <div class="chips">
+              <span class="chip">SolidWorks</span><span class="chip">MATLAB</span>
+              <span class="chip">FEA</span><span class="chip">Technical writing</span>
+            </div>
+            <div class="mock-card">
+              <strong>Lightweight drone arm redesign</strong>
+              <span>Case study generated from a 14-page lab report — problem, method, results.</span>
+            </div>
+            <div class="mock-card">
+              <strong>Thermal testing of battery enclosures</strong>
+              <span>Research summary with key findings pulled from the paper.</span>
+            </div>
+            <div class="mock-stat">
+              <div><b>128</b>visitors</div>
+              <div><b>47</b>project views</div>
+              <div><b>12</b>link clicks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== How it works ===== -->
+    <section id="how" style="padding-top:40px;">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2>From folder of files to finished portfolio</h2>
+          <p>No templates to wrestle with and no code to write. Bring what you already have.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><h3>Upload your work</h3><p>Resumes, reports, research, images and project documents.</p></div>
+          <div class="step"><h3>AI analyzes it</h3><p>Identifies your skills, outcomes and achievements.</p></div>
+          <div class="step"><h3>Pick a package</h3><p>Instant, Guided, Plus or Pro — one-time or monthly.</p></div>
+          <div class="step"><h3>Get your portfolio</h3><p>Share it, download it, and watch engagement.</p></div>
+          <div class="step"><h3>Add career tools</h3><p>Tailor for specific jobs and prep for interviews.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Differentiator ===== -->
+    <section class="band">
+      <div class="wrap band-grid">
+        <div>
+          <p class="eyebrow">Why Folioform</p>
+          <h2>It understands your work — not just how it looks.</h2>
+          <p>
+            Website builders give you a blank page. Folioform reads your actual project documents and
+            turns them into meaningful case studies. It can rephrase and organize your experience,
+            but it never invents credentials, results or achievements.
+          </p>
+        </div>
+        <div class="compare">
+          <div class="them"><small>Typical website builder</small><p>Pick a theme, write every section yourself, figure out what's worth highlighting.</p></div>
+          <div class="us"><small>Folioform</small><p>Upload a lab report, get a structured case study with your methods, skills and measurable results.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Pricing ===== -->
+    <section id="pricing">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Pricing</p>
+          <h2>Pay once, or keep it growing</h2>
+          <p>Every customer starts with a baseline package. Career add-ons unlock after that.</p>
+        </div>
+
+        <div class="toggle" role="tablist" aria-label="Plan type">
+          <button class="active" data-group="onetime" role="tab" aria-selected="true">One-time</button>
+          <button data-group="monthly" role="tab" aria-selected="false">Monthly</button>
+        </div>
+
+        <!-- One-time plans -->
+        <div class="plans plan-group" id="onetime">
+          <div class="plan">
+            <h3>Instant Portfolio</h3>
+            <p class="for">For a finished portfolio, fast</p>
+            <div class="price">$19<small>one-time</small></div>
+            <ul>
+              <li>Upload a resume + one project document</li>
+              <li>AI-generated professional portfolio</li>
+              <li>Automatic skills &amp; accomplishment extraction</li>
+              <li>One final generation</li>
+              <li>Portfolio analytics</li>
+              <li>Downloadable static portfolio</li>
+              <li class="no">No editing or regeneration</li>
+            </ul>
+            <p class="fine">Additional generations require a new purchase.</p>
+            <a href="#" class="btn btn-ghost btn-block" data-plan="instant">Choose Instant</a>
+          </div>
+          <div class="plan featured">
+            <span class="badge">Most flexible</span>
+            <h3>Guided Portfolio</h3>
+            <p class="for">For input and customization</p>
+            <div class="price">$39<small>one-time</small></div>
+            <ul>
+              <li>Everything in Instant</li>
+              <li>Upload up to five projects</li>
+              <li>Four customer-directed AI revisions</li>
+              <li>Choose from available design styles</li>
+              <li>Customize emphasis, wording &amp; organization</li>
+              <li>Portfolio analytics</li>
+              <li>Downloadable static portfolio</li>
+            </ul>
+            <p class="fine">Extra revisions available after the four included.</p>
+            <a href="#" class="btn btn-primary btn-block" data-plan="guided">Choose Guided</a>
+          </div>
+        </div>
+
+        <!-- Monthly plans -->
+        <div class="plans plan-group" id="monthly" hidden>
+          <div class="plan">
+            <h3>Folioform Plus</h3>
+            <p class="for">For ongoing portfolio maintenance</p>
+            <div class="price">$9<small>/ month</small></div>
+            <ul>
+              <li>AI portfolio creation &amp; continued access</li>
+              <li>Three AI revisions per month</li>
+              <li>Ongoing manual editing</li>
+              <li>Hosted portfolio website</li>
+              <li>Add or update projects</li>
+              <li>Shareable professional URL</li>
+              <li>Portfolio analytics</li>
+            </ul>
+            <p class="fine">Job-specific portfolios and interview prep are add-ons.</p>
+            <a href="#" class="btn btn-ghost btn-block" data-plan="plus">Start Plus</a>
+          </div>
+          <div class="plan featured">
+            <span class="badge">For job seekers</span>
+            <h3>Folioform Pro</h3>
+            <p class="for">For active job seekers &amp; professionals</p>
+            <div class="price">$15<small>/ month</small></div>
+            <ul>
+              <li>Everything in Plus</li>
+              <li>Ten AI revisions per month</li>
+              <li>Unlimited manual edits</li>
+              <li>Additional project uploads</li>
+              <li>Expanded portfolio customization</li>
+              <li>Continued website hosting</li>
+              <li>Portfolio analytics</li>
+            </ul>
+            <p class="fine">Does not include unlimited job-specific generation or interview prep.</p>
+            <a href="#" class="btn btn-primary btn-block" data-plan="pro">Start Pro</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Add-ons ===== -->
+    <section id="addons" class="addons-wrap">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Career tools</p>
+          <h2>Built for the job search, one application at a time</h2>
+          <p>Tailor your portfolio to a specific job description and practice interviews using your real projects.</p>
+        </div>
+        <div class="addons">
+          <div class="addon"><span class="tag">Tailoring</span><h3>Job-Specific Portfolio</h3><div class="amt">$9<small>/job</small></div><p>A version tuned to a pasted job description — highlights what matters, invents nothing.</p></div>
+          <div class="addon"><span class="tag">Tailoring</span><h3>Job Tailoring Bundle</h3><div class="amt">$35</div><p>Five job-specific portfolio versions.</p></div>
+          <div class="addon"><span class="tag">Interviews</span><h3>Interview Preparation</h3><div class="amt">$12<small>/package</small></div><p>Personalized questions, STAR examples and talking points from your own work.</p></div>
+          <div class="addon"><span class="tag">Interviews</span><h3>Interview Prep Bundle</h3><div class="amt">$30</div><p>Three preparation packages.</p></div>
+          <div class="addon"><span class="tag">Best value</span><h3>Career Application Bundle</h3><div class="amt">$18<small>/job</small></div><p>One tailored portfolio plus one interview prep package.</p></div>
+          <div class="addon"><span class="tag">Revisions</span><h3>Additional AI Revision</h3><div class="amt">$5</div><p>One extra customer-directed revision.</p></div>
+          <div class="addon"><span class="tag">Revisions</span><h3>Revision Bundle</h3><div class="amt">$10</div><p>Three additional revisions.</p></div>
+          <div class="addon"><span class="tag">Projects</span><h3>Additional Project Analysis</h3><div class="amt">$5<small>/project</small></div><p>Turns another uploaded report into a portfolio case study.</p></div>
+        </div>
+        <p class="addon-note">Add-ons are available after purchasing any baseline package — one-time or subscription.</p>
+      </div>
+    </section>
+
+    <!-- ===== Included for everyone ===== -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Included on every plan</p>
+          <h2>The essentials are never an upsell</h2>
+        </div>
+        <div class="features">
+          <div class="feature"><div class="icon">📈</div><h3>Portfolio analytics</h3><p>Visitor counts, project views and link engagement.</p></div>
+          <div class="feature"><div class="icon">🔍</div><h3>AI document analysis</h3><p>Extracts projects, skills, accomplishments and results.</p></div>
+          <div class="feature"><div class="icon">📐</div><h3>Professional layouts</h3><p>Clean, recruiter-friendly portfolio structure.</p></div>
+          <div class="feature"><div class="icon">🔒</div><h3>Customer control</h3><p>Document review, privacy settings and account access.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Policies / FAQ ===== -->
+    <section id="faq" style="padding-top:20px;">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Policies</p>
+          <h2>Straight answers</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Will the AI make up accomplishments?</summary>
+            <p>No. Folioform can rephrase and organize your experience, but it never fabricates credentials, results or achievements.</p>
+          </details>
+          <details>
+            <summary>Can I buy an add-on without a package?</summary>
+            <p>No — add-ons require an eligible baseline package (Instant, Guided, Plus or Pro).</p>
+          </details>
+          <details>
+            <summary>How are revisions counted?</summary>
+            <p>Each submitted revision request uses one credit. Failed generations don't consume credits.</p>
+          </details>
+          <details>
+            <summary>How long is a one-time portfolio hosted?</summary>
+            <p>One-time packages include a 90-day hosted preview with analytics, then continued access through your downloaded static portfolio. Subscribers get hosting for as long as they're subscribed.</p>
+          </details>
+          <details>
+            <summary>What happens if I cancel my subscription?</summary>
+            <p>You keep any files you've exported. Ongoing hosting and editing access end according to the subscription terms.</p>
+          </details>
+          <details>
+            <summary>Are my documents private?</summary>
+            <p>Yes. Uploaded resumes and reports are private by default, and you can delete your documents and account at any time.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Final CTA ===== -->
+    <section class="cta" style="padding-top:40px;">
+      <div class="wrap">
+        <h2>Turn the work you've already done into what comes next.</h2>
+        <p>Start with Instant for $19, or go Guided for full control.</p>
+        <a href="#pricing" class="btn btn-primary">Build my portfolio</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div class="wrap foot">
+      <div><strong>Folioform</strong> — Your work. Your story. Your future.</div>
+      <div>Designed &amp; developed by <strong>Jillian Wojcik</strong> · ENGR 310 · © <span id="year"></span></div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+    menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a =>
+      a.addEventListener('click', () => navLinks.classList.remove('open'))
+    );
+
+    // One-time / Monthly pricing toggle
+    document.querySelectorAll('.toggle button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.toggle button').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.querySelectorAll('.plan-group').forEach(g => {
+          g.hidden = g.id !== btn.dataset.group;
+        });
+      });
+    });
+
+    // Placeholder checkout — replace with Stripe Checkout links in Phase 1
+    document.querySelectorAll('[data-plan]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        alert('Checkout for "' + btn.dataset.plan + '" is coming soon. (Connect Stripe here.)');
+      });
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
